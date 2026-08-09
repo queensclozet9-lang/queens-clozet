@@ -1,4 +1,3 @@
-import { MessageCircle } from "lucide-react";
 import { whatsappLink } from "@/lib/site";
 
 export function WhatsAppButton() {
@@ -8,10 +7,18 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with Queens Clozet on WhatsApp"
-
-      className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-forest text-ivory shadow-soft transition-transform duration-300 hover:-translate-y-0.5 hover:bg-forest-deep"
+      className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:bg-[#20bd5a] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
     >
-      <MessageCircle className="h-6 w-6" />
+      <svg
+        viewBox="0 0 24 24"
+        width="28"
+        height="28"
+        fill="currentColor"
+        className="h-7 w-7"
+      >
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.461c-1.84 0-3.644-.496-5.21-1.437l-.373-.223-3.87 1.014 1.032-3.772-.244-.388c-1.034-1.646-1.58-3.56-1.58-5.526 0-5.652 4.598-10.25 10.25-10.25 2.738 0 5.311 1.066 7.247 3.003 1.936 1.936 3.002 4.509 3.002 7.247 0 5.653-4.598 10.25-10.255 10.25m0-18.75c-4.687 0-8.5 3.813-8.5 8.5 0 1.84.588 3.543 1.697 4.938l-1.107 4.045 4.14-1.086c1.341.986 2.977 1.503 4.77 1.503 4.687 0 8.5-3.813 8.5-8.5 0-4.687-3.813-8.5-8.5-8.5" />
+      </svg>
     </a>
   );
 }
+
