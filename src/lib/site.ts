@@ -1,5 +1,5 @@
 export const business = {
-  name: "Queen Clozet",
+  name: "Queens Clozet",
   tagline: "Crafting fashion, art and creativity with a personal touch.",
   phone: "9363994467",
   phoneIntl: "+919363994467",
@@ -10,8 +10,9 @@ export const business = {
 } as const;
 
 export const whatsappLink = `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(
-  "Hello Queen Clozet, I would like to know more about your services.",
+  "Hello Queens Clozet, I would like to know more about your services.",
 )}`;
+
 
 export const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(
   "26A, Super Nagar, Perambalur, Tamil Nadu 621212, India",

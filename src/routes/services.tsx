@@ -20,13 +20,13 @@ const icons = [Shirt, Scissors, Gem, Flower2, Sparkles, Ribbon, Brush, Wand2, Pa
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — Boutique, Aari Work, Resin Art & Parlor | Queen Clozet" },
+      { title: "Services — Boutique, Aari Work, Resin Art & Parlor | Queens Clozet" },
       {
         name: "description",
         content:
-          "Explore Queen Clozet services: boutique fashion, costume customization, stone work accessories, resin arts, aari work, brooches, fabric painting, embroidery, parlor and creative classes.",
+          "Explore Queens Clozet services: boutique fashion, costume customization, stone work accessories, resin arts, aari work, brooches, fabric painting, embroidery, parlor and creative classes.",
       },
-      { property: "og:title", content: "Queen Clozet Services" },
+      { property: "og:title", content: "Queens Clozet Services" },
       {
         property: "og:description",
         content:
@@ -43,7 +43,7 @@ function Services() {
       <section className="mx-auto max-w-7xl px-5 pb-12 pt-16 sm:px-8 lg:pt-24">
         <SectionHeading
           eyebrow="Service Menu"
-          title="Ten ways to work with Queen Clozet"
+          title="Ten ways to work with Queens Clozet"
           intro="Each service is offered as personal, made-to-order work. Tell us what you have in mind and we will shape it with you."
         />
       </section>

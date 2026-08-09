@@ -7,13 +7,13 @@ import { classCategories } from "@/lib/site";
 export const Route = createFileRoute("/classes")({
   head: () => ({
     meta: [
-      { title: "Creative Classes — Aari, Embroidery, Resin Art | Queen Clozet" },
+      { title: "Creative Classes — Aari, Embroidery, Resin Art | Queens Clozet" },
       {
         name: "description",
         content:
-          "Learn aari work, embroidery, fabric painting, resin art and other handcrafted techniques with Queen Clozet in Perambalur. Enquire about upcoming classes.",
+          "Learn aari work, embroidery, fabric painting, resin art and other handcrafted techniques with Queens Clozet in Perambalur. Enquire about upcoming classes.",
       },
-      { property: "og:title", content: "Learn the Art — Queen Clozet Classes" },
+      { property: "og:title", content: "Learn the Art — Queens Clozet Classes" },
       {
         property: "og:description",
         content:
@@ -33,7 +33,7 @@ function Classes() {
             <SectionHeading
               eyebrow="Classes & Training"
               title="Learn the Art. Create Something Beautiful."
-              intro="Queen Clozet also teaches the crafts we practise. Sessions are hands-on and kept small, so you finish with something you made yourself."
+              intro="Queens Clozet also teaches the crafts we practise. Sessions are hands-on and kept small, so you finish with something you made yourself."
             />
             <Reveal delay={80} className="mt-8 text-sm leading-relaxed text-muted-foreground">
               <p>

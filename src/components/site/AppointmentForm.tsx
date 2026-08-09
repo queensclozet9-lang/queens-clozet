@@ -41,44 +41,50 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
   const fetchOccupancy = useCallback(async (date: string) => {
     if (!date) {
       setSlotOccupancy({});
-      return;
+      return {};
     }
     setLoadingSlots(true);
-
-    // Try RPC first, fallback to table query
-    const { data: rpcData, error: rpcError } = await supabase.rpc("get_slot_occupancy", {
-      target_date: date,
-    });
-
-    if (!rpcError && Array.isArray(rpcData)) {
-      const counts: Record<string, number> = {};
-      for (const item of rpcData as { preferred_time: string; booked_count: number }[]) {
-        counts[item.preferred_time] = Number(item.booked_count || 0);
-      }
-      setSlotOccupancy(counts);
-      setLoadingSlots(false);
-      return counts;
-    }
-
-    // Fallback table query
-    const { data: tableData } = await supabase
-      .from("appointments")
-      .select("preferred_time")
-      .eq("preferred_date", date)
-      .neq("status", "cancelled");
-
     const counts: Record<string, number> = {};
-    if (tableData) {
-      for (const row of tableData) {
-        if (row.preferred_time) {
-          counts[row.preferred_time] = (counts[row.preferred_time] || 0) + 1;
+
+    try {
+      // Try RPC first, fallback to table query
+      const { data: rpcData, error: rpcError } = await supabase.rpc("get_slot_occupancy", {
+        target_date: date,
+      });
+
+      if (!rpcError && Array.isArray(rpcData)) {
+        for (const item of rpcData as { preferred_time: string; booked_count: number }[]) {
+          counts[item.preferred_time] = Number(item.booked_count || 0);
+        }
+        setSlotOccupancy(counts);
+        return counts;
+      }
+
+      // Fallback table query
+      const { data: tableData } = await supabase
+        .from("appointments")
+        .select("preferred_time")
+        .eq("preferred_date", date)
+        .neq("status", "cancelled");
+
+      if (tableData) {
+        for (const row of tableData) {
+          if (row.preferred_time) {
+            counts[row.preferred_time] = (counts[row.preferred_time] || 0) + 1;
+          }
         }
       }
+      setSlotOccupancy(counts);
+      return counts;
+    } catch (err) {
+      console.warn("[AppointmentForm] Unable to fetch slot occupancy:", err);
+      setSlotOccupancy(counts);
+      return counts;
+    } finally {
+      setLoadingSlots(false);
     }
-    setSlotOccupancy(counts);
-    setLoadingSlots(false);
-    return counts;
   }, []);
+
 
   useEffect(() => {
     if (values.preferred_date) {

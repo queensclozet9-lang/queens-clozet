@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Queen Clozet design system.
+ * Queens Clozet design system.
+
  * Deep forest green, warm ivory, soft beige, muted gold, charcoal text.
  * All color values use oklch. Never hardcode colors in components.
  */

@@ -43,8 +43,8 @@ export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Admin Portal — Queen Clozet" },
-      { name: "description", content: "Queen Clozet management dashboard for appointments and collection items." },
+      { title: "Admin Portal — Queens Clozet" },
+      { name: "description", content: "Queens Clozet management dashboard for appointments and collection items." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -348,7 +348,8 @@ function Admin() {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border pb-6">
         <div>
           <p className="eyebrow text-accent-foreground/70">Staff Admin Dashboard</p>
-          <h1 className="mt-2 font-serif text-3xl text-primary">Queen Clozet Management</h1>
+          <h1 className="mt-2 font-serif text-3xl text-primary">Queens Clozet Management</h1>
+
         </div>
         <button
           type="button"

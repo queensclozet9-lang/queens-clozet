@@ -76,13 +76,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Queen Clozet — Boutique, Custom Fashion & Handcrafted Arts" },
+      { title: "Queens Clozet — Boutique, Custom Fashion & Handcrafted Arts" },
       {
         name: "description",
         content:
-          "Queen Clozet is a boutique and creative atelier in Perambalur offering custom fashion, aari work, embroidery, resin art, parlor services and creative classes.",
+          "Queens Clozet is a boutique and creative atelier in Perambalur offering custom fashion, aari work, embroidery, resin art, parlor services and creative classes.",
       },
-      { name: "author", content: "Queen Clozet" },
+      { name: "author", content: "Queens Clozet" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

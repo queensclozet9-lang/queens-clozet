@@ -33,7 +33,7 @@ export const sendAppointmentNotificationEmails = createServerFn({ method: "POST"
       return { success: false, reason: "MISSING_API_KEY" };
     }
 
-    const fromAddress = "Queen Clozet <onboarding@resend.dev>";
+    const fromAddress = "Queens Clozet <onboarding@resend.dev>";
     let ownerSent = false;
     let customerSent = false;
 
@@ -81,7 +81,7 @@ export const sendAppointmentNotificationEmails = createServerFn({ method: "POST"
           body: JSON.stringify({
             from: fromAddress,
             to: [data.email.trim()],
-            subject: `Appointment Request Received — Queen Clozet`,
+            subject: `Appointment Request Received — Queens Clozet`,
             html: customerHtml,
           }),
         });
@@ -130,7 +130,7 @@ function generateOwnerEmailHtml(app: AppointmentEmailData): string {
           <!-- Header Banner -->
           <tr>
             <td style="background-color: #1A362B; padding: 36px; text-align: center; border-bottom: 3px solid #C5A059;">
-              <h1 style="color: #ffffff; font-family: 'Georgia', serif; font-size: 26px; font-weight: normal; margin: 0; letter-spacing: 2px; text-transform: uppercase;">QUEEN CLOZET</h1>
+              <h1 style="color: #ffffff; font-family: 'Georgia', serif; font-size: 26px; font-weight: normal; margin: 0; letter-spacing: 2px; text-transform: uppercase;">QUEENS CLOZET</h1>
               <p style="color: #C5A059; font-size: 11px; margin: 8px 0 0 0; letter-spacing: 3px; text-transform: uppercase;">New Appointment Request</p>
             </td>
           </tr>
@@ -193,7 +193,7 @@ function generateOwnerEmailHtml(app: AppointmentEmailData): string {
           <!-- Footer -->
           <tr>
             <td style="background-color: #F8FAFC; padding: 20px; text-align: center; border-top: 1px solid #E2E8F0; font-size: 12px; color: #A0AEC0;">
-              Queen Clozet Atelier Management System · Perambalur
+              Queens Clozet Atelier Management System · Perambalur
             </td>
           </tr>
         </table>
@@ -224,7 +224,7 @@ function generateCustomerEmailHtml(app: AppointmentEmailData): string {
           <!-- Header Banner -->
           <tr>
             <td style="background-color: #1A362B; padding: 40px; text-align: center; border-bottom: 3px solid #C5A059;">
-              <h1 style="color: #ffffff; font-family: 'Georgia', serif; font-size: 28px; font-weight: normal; margin: 0; letter-spacing: 3px; text-transform: uppercase;">QUEEN CLOZET</h1>
+              <h1 style="color: #ffffff; font-family: 'Georgia', serif; font-size: 28px; font-weight: normal; margin: 0; letter-spacing: 3px; text-transform: uppercase;">QUEENS CLOZET</h1>
               <p style="color: #C5A059; font-size: 12px; margin: 8px 0 0 0; letter-spacing: 2px; text-transform: uppercase;">Fashion · Art · Personal Atelier</p>
             </td>
           </tr>
@@ -236,7 +236,7 @@ function generateCustomerEmailHtml(app: AppointmentEmailData): string {
                 Dear ${app.full_name},
               </h2>
               <p style="font-size: 15px; color: #4A5568;">
-                Thank you for requesting an appointment with <strong>Queen Clozet</strong>. We have received your booking request and are preparing to welcome you!
+                Thank you for requesting an appointment with <strong>Queens Clozet</strong>. We have received your booking request and are preparing to welcome you!
               </p>
 
               <!-- Appointment Details Box -->
@@ -280,8 +280,8 @@ function generateCustomerEmailHtml(app: AppointmentEmailData): string {
           <!-- Footer -->
           <tr>
             <td style="background-color: #1A362B; padding: 24px; text-align: center; color: #A0AEC0; font-size: 12px;">
-              <p style="margin: 0; color: #C5A059;">Queen Clozet — Crafting fashion, art and creativity with a personal touch.</p>
-              <p style="margin: 8px 0 0 0;">© Queen Clozet. All rights reserved.</p>
+              <p style="margin: 0; color: #C5A059;">Queens Clozet — Crafting fashion, art and creativity with a personal touch.</p>
+              <p style="margin: 8px 0 0 0;">© Queens Clozet. All rights reserved.</p>
             </td>
           </tr>
         </table>

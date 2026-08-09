@@ -5,11 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Staff Sign In — Queen Clozet" },
-      { name: "description", content: "Queen Clozet staff sign in for appointment management." },
+      { title: "Staff Sign In — Queens Clozet" },
+      { name: "description", content: "Queens Clozet staff sign in for appointment management." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Staff Sign In — Queen Clozet" },
-      { property: "og:description", content: "Private sign in for Queen Clozet staff." },
+      { property: "og:title", content: "Staff Sign In — Queens Clozet" },
+      { property: "og:description", content: "Private sign in for Queens Clozet staff." },
     ],
   }),
   component: Auth,
@@ -73,7 +73,7 @@ function Auth() {
         {mode === "signin" ? "Sign in" : "Create staff account"}
       </h1>
       <p className="mt-3 text-sm text-muted-foreground">
-        Appointment management is private to Queen Clozet staff.
+        Appointment management is private to Queens Clozet staff.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">

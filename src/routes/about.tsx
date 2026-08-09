@@ -8,13 +8,13 @@ import { services } from "@/lib/site";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Queen Clozet — Boutique & Craft Atelier in Perambalur" },
+      { title: "About Queens Clozet — Boutique & Craft Atelier in Perambalur" },
       {
         name: "description",
         content:
-          "Queen Clozet is a boutique and handcraft atelier offering personalised fashion, aari work, embroidery, resin art, brooches, parlor services and creative classes.",
+          "Queens Clozet is a boutique and handcraft atelier offering personalised fashion, aari work, embroidery, resin art, brooches, parlor services and creative classes.",
       },
-      { property: "og:title", content: "About Queen Clozet" },
+      { property: "og:title", content: "About Queens Clozet" },
       {
         property: "og:description",
         content:
@@ -34,7 +34,7 @@ function About() {
             <SectionHeading
               eyebrow="Our Story"
               title="Crafted With Creativity. Designed With You."
-              intro="Queen Clozet is a small atelier built around handwork. We design, stitch, paint and embellish — and we do it in conversation with the person who will wear it."
+              intro="Queens Clozet is a small atelier built around handwork. We design, stitch, paint and embellish — and we do it in conversation with the person who will wear it."
             />
             <Reveal delay={80} className="mt-8 space-y-5 text-sm leading-relaxed text-muted-foreground">
               <p>

@@ -34,15 +34,16 @@ export function Header() {
         <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
           <img
             src={logoHeader}
-            alt="Queen Clozet Logo"
+            alt="Queens Clozet Logo"
             width={48}
             height={48}
             className="h-11 w-11 shrink-0 rounded-full object-cover"
           />
           <span className="min-w-0">
             <span className="block truncate font-serif text-xl leading-none text-primary sm:text-2xl">
-              Queen Clozet
+              Queens Clozet
             </span>
+
             <span className="eyebrow mt-1 block truncate text-muted-foreground">
               Boutique &amp; Craft Atelier
             </span>

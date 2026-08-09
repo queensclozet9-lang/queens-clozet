@@ -13,13 +13,13 @@ const homeServiceIcons = [Shirt, Scissors, Gem, Flower2, Sparkles, Ribbon];
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Queen Clozet — Boutique, Custom Fashion & Handcrafted Arts" },
+      { title: "Queens Clozet — Boutique, Custom Fashion & Handcrafted Arts" },
       {
         name: "description",
         content:
           "Where creativity meets elegance. Boutique collections, costume customization, aari work, embroidery, resin art, brooches, parlor services and creative classes in Perambalur.",
       },
-      { property: "og:title", content: "Queen Clozet — Where Creativity Meets Elegance" },
+      { property: "og:title", content: "Queens Clozet — Where Creativity Meets Elegance" },
       {
         property: "og:description",
         content:
@@ -38,10 +38,11 @@ function Home() {
       <section className="relative overflow-hidden bg-forest text-ivory py-20 lg:py-28 min-h-[80vh] flex items-center">
         <img
           src={heroBg}
-          alt="Queen Clozet Atelier Interior"
+          alt="Queens Clozet Atelier Interior"
           className="absolute inset-0 h-full w-full object-cover object-center brightness-[0.6]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/35 backdrop-blur-[1px]" />
+
 
         <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 w-full py-12">
           <Reveal className="max-w-2xl">
@@ -90,9 +91,9 @@ function Home() {
           </Reveal>
           <div className="order-1 lg:order-2">
             <SectionHeading
-              eyebrow="About Queen Clozet"
+              eyebrow="About Queens Clozet"
               title="Crafted With Creativity. Designed With You."
-              intro="Queen Clozet began with a simple love for making things by hand. Every outfit, every motif and every small accessory is shaped around the person it is made for."
+              intro="Queens Clozet began with a simple love for making things by hand. Every outfit, every motif and every small accessory is shaped around the person it is made for."
             />
             <Reveal delay={80} className="mt-8 space-y-5 text-sm leading-relaxed text-muted-foreground">
               <p>
@@ -201,7 +202,8 @@ function Home() {
       <section className="bg-forest py-20 text-ivory lg:py-28">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <Reveal className="max-w-2xl">
-            <p className="eyebrow text-gold">Why Queen Clozet?</p>
+            <p className="eyebrow text-gold">Why Queens Clozet?</p>
+
             <h2 className="mt-4 text-3xl leading-[1.15] sm:text-4xl lg:text-[2.75rem]">
               Made by hand, made for you
             </h2>

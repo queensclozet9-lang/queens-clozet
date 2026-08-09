@@ -25,13 +25,13 @@ const jsonLd = {
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact & Location — Queen Clozet, Perambalur" },
+      { title: "Contact & Location — Queens Clozet, Perambalur" },
       {
         name: "description",
         content:
-          "Visit Queen Clozet at 26A, Super Nagar, Perambalur, Tamil Nadu 621212. Open 9:00 AM to 7:00 PM. Call or WhatsApp 9363994467.",
+          "Visit Queens Clozet at 26A, Super Nagar, Perambalur, Tamil Nadu 621212. Open 9:00 AM to 7:00 PM. Call or WhatsApp 9363994467.",
       },
-      { property: "og:title", content: "Contact Queen Clozet" },
+      { property: "og:title", content: "Contact Queens Clozet" },
       {
         property: "og:description",
         content: "26A, Super Nagar, Perambalur, Tamil Nadu 621212. Open 9:00 AM – 7:00 PM.",

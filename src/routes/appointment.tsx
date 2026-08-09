@@ -12,13 +12,13 @@ export const Route = createFileRoute("/appointment")({
   }),
   head: () => ({
     meta: [
-      { title: "Book an Appointment — Queen Clozet Boutique, Perambalur" },
+      { title: "Book an Appointment — Queens Clozet Boutique, Perambalur" },
       {
         name: "description",
         content:
-          "Request an appointment with Queen Clozet for boutique fashion, customization, aari work, embroidery, resin art, parlor services or creative classes. No online payment needed.",
+          "Request an appointment with Queens Clozet for boutique fashion, customization, aari work, embroidery, resin art, parlor services or creative classes. No online payment needed.",
       },
-      { property: "og:title", content: "Book an Appointment at Queen Clozet" },
+      { property: "og:title", content: "Book an Appointment at Queens Clozet" },
       {
         property: "og:description",
         content:

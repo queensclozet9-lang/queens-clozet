@@ -10,13 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/collections")({
   head: () => ({
     meta: [
-      { title: "Collections & Portfolio — Handcrafted Work | Queen Clozet" },
+      { title: "Collections & Portfolio — Handcrafted Work | Queens Clozet" },
       {
         name: "description",
         content:
-          "Browse the Queen Clozet portfolio: boutique pieces, custom costumes, stone work accessories, aari work, embroidery, resin art, fabric painting and brooches.",
+          "Browse the Queens Clozet portfolio: boutique pieces, custom costumes, stone work accessories, aari work, embroidery, resin art, fabric painting and brooches.",
       },
-      { property: "og:title", content: "Queen Clozet Collections & Portfolio" },
+      { property: "og:title", content: "Queens Clozet Collections & Portfolio" },
       {
         property: "og:description",
         content:

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube } from "lucide-react";
-import logo from "@/assets/logo.png.asset.json";
+import logoHeader from "@/assets/logo-header.png";
 import { business, navLinks } from "@/lib/site";
 
 export function Footer() {
@@ -11,15 +11,16 @@ export function Footer() {
           <div>
             <div className="flex min-w-0 items-center gap-3">
               <img
-                src={logo.url}
-                alt="Queen Clozet"
+                src={logoHeader}
+                alt="Queens Clozet"
                 width={56}
                 height={56}
                 loading="lazy"
                 className="h-14 w-14 shrink-0 rounded-full object-cover"
               />
-              <span className="font-serif text-2xl">Queen Clozet</span>
+              <span className="font-serif text-2xl">Queens Clozet</span>
             </div>
+
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-ivory/70">{business.tagline}</p>
             <div className="mt-6 flex gap-3">
               {[Instagram, Facebook, Youtube].map((Icon, index) => (
@@ -73,7 +74,8 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-3 border-t border-ivory/15 pt-6 text-xs text-ivory/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Queen Clozet. All rights reserved.</p>
+          <p>© 2026 Queens Clozet. All rights reserved.</p>
+
           <p>Perambalur, Tamil Nadu</p>
         </div>
       </div>
