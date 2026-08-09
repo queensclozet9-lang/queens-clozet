@@ -33,9 +33,12 @@ export const sendAppointmentNotificationEmails = createServerFn({ method: "POST"
       return { success: false, reason: "MISSING_API_KEY" };
     }
 
-    const fromAddress = "Queens Clozet <onboarding@resend.dev>";
+    const fromAddress =
+      process.env["RESEND_FROM_EMAIL"] ||
+      "Queens Clozet <onboarding@resend.dev>";
     let ownerSent = false;
     let customerSent = false;
+
 
     // 1. Send Alert Email to Owner (queensclozet9@gmail.com)
     try {
