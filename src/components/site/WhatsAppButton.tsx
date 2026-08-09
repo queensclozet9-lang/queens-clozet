@@ -7,7 +7,8 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with Queens Clozet on WhatsApp"
-      className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-300 hover:scale-105 hover:bg-[#20bd5a] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
+      className="fixed bottom-5 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-forest text-ivory shadow-soft border border-ivory/20 transition-all duration-300 hover:scale-105 hover:bg-forest-deep focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+
     >
       <svg
         viewBox="0 0 24 24"
