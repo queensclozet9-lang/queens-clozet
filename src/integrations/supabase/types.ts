@@ -127,6 +127,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_slot_occupancy: {
+        Args: {
+          target_date: string
+        }
+        Returns: {
+          preferred_time: string
+          booked_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { serviceOptions, timeSlots } from "@/lib/site";
+import { serviceOptions, timeSlots, SLOT_MAX_CAPACITY } from "@/lib/site";
+import { sendAppointmentNotificationEmails } from "@/lib/email";
+
 
 type FieldErrors = Record<string, string>;
 
@@ -33,6 +35,58 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [slotOccupancy, setSlotOccupancy] = useState<Record<string, number>>({});
+  const [loadingSlots, setLoadingSlots] = useState(false);
+
+  const fetchOccupancy = useCallback(async (date: string) => {
+    if (!date) {
+      setSlotOccupancy({});
+      return;
+    }
+    setLoadingSlots(true);
+
+    // Try RPC first, fallback to table query
+    const { data: rpcData, error: rpcError } = await supabase.rpc("get_slot_occupancy", {
+      target_date: date,
+    });
+
+    if (!rpcError && Array.isArray(rpcData)) {
+      const counts: Record<string, number> = {};
+      for (const item of rpcData as { preferred_time: string; booked_count: number }[]) {
+        counts[item.preferred_time] = Number(item.booked_count || 0);
+      }
+      setSlotOccupancy(counts);
+      setLoadingSlots(false);
+      return counts;
+    }
+
+    // Fallback table query
+    const { data: tableData } = await supabase
+      .from("appointments")
+      .select("preferred_time")
+      .eq("preferred_date", date)
+      .neq("status", "cancelled");
+
+    const counts: Record<string, number> = {};
+    if (tableData) {
+      for (const row of tableData) {
+        if (row.preferred_time) {
+          counts[row.preferred_time] = (counts[row.preferred_time] || 0) + 1;
+        }
+      }
+    }
+    setSlotOccupancy(counts);
+    setLoadingSlots(false);
+    return counts;
+  }, []);
+
+  useEffect(() => {
+    if (values.preferred_date) {
+      void fetchOccupancy(values.preferred_date);
+    } else {
+      setSlotOccupancy({});
+    }
+  }, [values.preferred_date, fetchOccupancy]);
 
   const set = (key: keyof typeof initial) => (value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -60,9 +114,13 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
     if (!values.preferred_date) next['preferred_date'] = "Please choose a date.";
     else if (values.preferred_date < todayISO()) next['preferred_date'] = "Please choose today or a later date.";
 
-    if (!values.preferred_time) next['preferred_time'] = "Please choose a time slot.";
-    else if (!timeSlots.includes(values.preferred_time))
-      next['preferred_time'] = "Please choose a slot between 9:00 AM and 7:00 PM.";
+    if (!values.preferred_time) {
+      next['preferred_time'] = "Please choose a time slot.";
+    } else if (!timeSlots.includes(values.preferred_time)) {
+      next['preferred_time'] = "Please choose a slot between 9:00 AM and 6:00 PM.";
+    } else if ((slotOccupancy[values.preferred_time] || 0) >= SLOT_MAX_CAPACITY) {
+      next['preferred_time'] = `The ${values.preferred_time} slot is currently filled (3/3 booked). Please select an available slot.`;
+    }
 
     const people = Number(values.people_count || "1");
     if (!Number.isInteger(people) || people < 1 || people > 50)
@@ -77,12 +135,32 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (status === "sending") return;
+
+    // Fresh count check before submitting
+    const freshCounts = await fetchOccupancy(values.preferred_date);
+    const currentBooked = (freshCounts?.[values.preferred_time] ?? (slotOccupancy[values.preferred_time] || 0));
+
+    if (currentBooked >= SLOT_MAX_CAPACITY) {
+      const openSlots = timeSlots.filter((slot) => (freshCounts?.[slot] || 0) < SLOT_MAX_CAPACITY);
+      setStatus("error");
+      if (openSlots.length > 0) {
+        setErrorMessage(
+          `The ${values.preferred_time} slot has just been filled (3/3 places taken). We recommend selecting one of these open slots: ${openSlots.slice(0, 3).join(", ")}.`
+        );
+      } else {
+        setErrorMessage(
+          `All slots for ${values.preferred_date} are currently filled. Please select another date.`
+        );
+      }
+      return;
+    }
+
     if (!validate()) return;
 
     setStatus("sending");
     setErrorMessage("");
 
-    const { error } = await supabase.from("appointments").insert({
+    const appointmentPayload = {
       full_name: values.full_name.trim(),
       phone: values.phone.trim(),
       whatsapp: values.whatsapp.trim() || null,
@@ -92,7 +170,9 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
       preferred_time: values.preferred_time,
       people_count: Number(values.people_count || "1"),
       message: values.message.trim() || null,
-    });
+    };
+
+    const { error } = await supabase.from("appointments").insert(appointmentPayload);
 
     if (error) {
       setStatus("error");
@@ -100,8 +180,14 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
       return;
     }
 
+    // Trigger Resend emails asynchronously on the server
+    void sendAppointmentNotificationEmails({ data: appointmentPayload });
+
+
     setStatus("sent");
     setValues(initial);
+
+    setSlotOccupancy({});
   }
 
   if (status === "sent") {
@@ -125,6 +211,10 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
       </div>
     );
   }
+
+  const availableRecommendedSlots = timeSlots.filter(
+    (slot) => (slotOccupancy[slot] || 0) < SLOT_MAX_CAPACITY
+  );
 
   return (
     <form onSubmit={handleSubmit} noValidate className="grid gap-6 sm:grid-cols-2">
@@ -206,19 +296,35 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
         />
       </Field>
 
-      <Field label="Preferred Time" required error={errors['preferred_time']}>
+      <Field label="Preferred Time Slot (1-Hr Gap, Max 3 per slot)" required error={errors['preferred_time']}>
         <select
           className={fieldClass}
           value={values.preferred_time}
           onChange={(e) => set("preferred_time")(e.target.value)}
+          disabled={!values.preferred_date || loadingSlots}
         >
-          <option value="">Select a slot (9:00 AM – 7:00 PM)</option>
-          {timeSlots.map((slot) => (
-            <option key={slot} value={slot}>
-              {slot}
-            </option>
-          ))}
+          <option value="">
+            {!values.preferred_date
+              ? "Select a date first"
+              : loadingSlots
+              ? "Checking slot availability…"
+              : "Select a 1-hour slot (9:00 AM – 6:00 PM)"}
+          </option>
+          {timeSlots.map((slot) => {
+            const count = slotOccupancy[slot] || 0;
+            const isFull = count >= SLOT_MAX_CAPACITY;
+            return (
+              <option key={slot} value={slot} disabled={isFull}>
+                {slot} {isFull ? "(FILLED - 3/3 Booked)" : count > 0 ? `(${count}/${SLOT_MAX_CAPACITY} Booked)` : "(Available)"}
+              </option>
+            );
+          })}
         </select>
+        {values.preferred_date && availableRecommendedSlots.length > 0 && (
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            Max 3 bookings allowed per hour slot.
+          </p>
+        )}
       </Field>
 
       <Field label="Message / Requirements" error={errors['message']} className="sm:col-span-2">
@@ -233,20 +339,19 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
 
       <div className="sm:col-span-2">
         {status === "error" ? (
-          <p className="mb-4 rounded-sm border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {errorMessage}
-          </p>
+          <div className="mb-4 rounded-sm border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            <p className="font-medium">{errorMessage}</p>
+          </div>
         ) : null}
         <button
           type="submit"
-          disabled={status === "sending"}
+          disabled={status === "sending" || loadingSlots}
           className="w-full rounded-sm bg-primary px-8 py-4 text-xs font-medium uppercase tracking-[0.2em] text-primary-foreground transition-colors hover:bg-forest-deep disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
         >
           {status === "sending" ? "Sending request…" : "Request Appointment"}
         </button>
         <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-          This is an appointment request, not an instant confirmation. We will contact you to confirm
-          the date and time. No payment is collected online.
+          This is an appointment request. Max 3 bookings are accepted per 1-hour slot to ensure personal attention.
         </p>
       </div>
     </form>

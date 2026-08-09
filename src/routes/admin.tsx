@@ -2,7 +2,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { galleryAdminCategories } from "@/lib/gallery";
-import { Plus, Trash2, Edit3, Image as ImageIcon, Check, X, Upload } from "lucide-react";
+import { timeSlots, SLOT_MAX_CAPACITY } from "@/lib/site";
+import { Plus, Trash2, Edit3, Image as ImageIcon, Check, X, Upload, Clock, Users, AlertCircle, CheckCircle2 } from "lucide-react";
+
 
 type Status = "pending" | "confirmed" | "completed" | "cancelled";
 
@@ -664,9 +666,84 @@ function Admin() {
       ) : (
         /* TAB 2: APPOINTMENT REQUESTS */
         <div className="mt-8">
+          {/* Time Slot Occupancy Matrix */}
+          <div className="mb-8 rounded-sm border border-border bg-card p-6 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
+              <div>
+                <h3 className="font-serif text-lg text-primary flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-accent-foreground" /> 1-Hour Time Slot Occupancy
+                </h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Showing slot utilization for {dateFilter ? dateFilter : "today (" + new Date().toISOString().slice(0, 10) + ")"}. Max capacity is 3 bookings per hour slot.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500"></span> Open (0-2)
+                </span>
+                <span className="inline-flex items-center gap-1 text-destructive font-medium">
+                  <span className="h-2 w-2 rounded-full bg-destructive"></span> Filled (3/3)
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {timeSlots.map((slot) => {
+                const targetDate = dateFilter || new Date().toISOString().slice(0, 10);
+                const bookedInSlot = rows.filter(
+                  (row) => row.preferred_date === targetDate && row.preferred_time === slot && row.status !== "cancelled"
+                );
+                const count = bookedInSlot.length;
+                const isFull = count >= SLOT_MAX_CAPACITY;
+
+                return (
+                  <div
+                    key={slot}
+                    className={`rounded-sm border p-3 transition-colors ${
+                      isFull
+                        ? "border-destructive/50 bg-destructive/5"
+                        : count > 0
+                        ? "border-amber-500/50 bg-amber-500/5"
+                        : "border-border bg-background"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-foreground">{slot}</span>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                          isFull
+                            ? "bg-destructive text-destructive-foreground"
+                            : count > 0
+                            ? "bg-amber-500 text-white"
+                            : "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
+                        }`}
+                      >
+                        {count}/{SLOT_MAX_CAPACITY} {isFull ? "FULL" : ""}
+                      </span>
+                    </div>
+
+                    <div className="mt-2.5">
+                      {bookedInSlot.length === 0 ? (
+                        <p className="text-[11px] text-muted-foreground italic">No bookings</p>
+                      ) : (
+                        <ul className="space-y-1">
+                          {bookedInSlot.map((b) => (
+                            <li key={b.id} className="truncate text-[11px] text-foreground font-medium" title={`${b.full_name} (${b.service})`}>
+                              • {b.full_name} <span className="text-muted-foreground">({b.service})</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="flex flex-wrap items-end gap-4">
             <label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-              Date
+              Date Filter
               <input
                 type="date"
                 value={dateFilter}
@@ -675,7 +752,7 @@ function Admin() {
               />
             </label>
             <label className="text-xs uppercase tracking-[0.14em] text-muted-foreground">
-              Status
+              Status Filter
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as "all" | Status)}
@@ -698,7 +775,7 @@ function Admin() {
                 }}
                 className="pb-2 text-xs uppercase tracking-[0.14em] text-primary underline underline-offset-4"
               >
-                Clear
+                Clear Filters
               </button>
             ) : null}
             <p className="pb-2 text-xs text-muted-foreground">{filteredAppointments.length} request(s)</p>

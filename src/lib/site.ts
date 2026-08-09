@@ -85,18 +85,22 @@ export const serviceOptions = [
   "General Enquiry",
 ] as const;
 
-/** 30-minute slots inside business hours, 9:00 AM to 6:30 PM (last slot ends by 7 PM). */
-export const timeSlots: string[] = (() => {
-  const slots: string[] = [];
-  for (let minutes = 9 * 60; minutes <= 18 * 60 + 30; minutes += 30) {
-    const hour24 = Math.floor(minutes / 60);
-    const minute = minutes % 60;
-    const suffix = hour24 >= 12 ? "PM" : "AM";
-    const hour12 = hour24 > 12 ? hour24 - 12 : hour24;
-    slots.push(`${hour12}:${String(minute).padStart(2, "0")} ${suffix}`);
-  }
-  return slots;
-})();
+export const SLOT_MAX_CAPACITY = 3;
+
+/** 1-hour slots inside business hours, 9:00 AM to 6:00 PM. */
+export const timeSlots: string[] = [
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+  "5:00 PM",
+  "6:00 PM",
+];
+
 
 export const navLinks = [
   { to: "/", label: "Home" },
