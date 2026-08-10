@@ -24,6 +24,37 @@ function todayISO() {
   return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 10);
 }
 
+function maxThreeMonthsISO() {
+  const now = new Date();
+  const future = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
+  const offset = future.getTimezoneOffset();
+  return new Date(future.getTime() - offset * 60000).toISOString().slice(0, 10);
+}
+
+function parseSlotHour(slot: string): number {
+  if (!slot) return 0;
+  const parts = slot.trim().split(":");
+  let hour = parseInt(parts[0] ?? "0", 10);
+  if (isNaN(hour)) hour = 0;
+  const isPM = slot.toUpperCase().includes("PM");
+  const isAM = slot.toUpperCase().includes("AM");
+
+  if (isPM && hour < 12) hour += 12;
+  if (isAM && hour === 12) hour = 0;
+  return hour;
+}
+
+function isSlotPast(slot: string, selectedDate: string): boolean {
+  if (!selectedDate || selectedDate !== todayISO()) return false;
+
+  const now = new Date();
+  const currentHour = now.getHours();
+
+  const slotHour = parseSlotHour(slot);
+  return slotHour <= currentHour;
+}
+
+
 const fieldClass =
   "mt-2 w-full rounded-sm border border-input bg-card px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-accent";
 
@@ -116,17 +147,24 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
         next['email'] = "Enter a valid email address.";
     }
 
-    if (!values.service) next['service'] = "Please choose a service.";
-    if (!values.preferred_date) next['preferred_date'] = "Please choose a date.";
-    else if (values.preferred_date < todayISO()) next['preferred_date'] = "Please choose today or a later date.";
+    if (!values.preferred_date) {
+      next['preferred_date'] = "Please choose a date.";
+    } else if (values.preferred_date < todayISO()) {
+      next['preferred_date'] = "Please choose today or a future date.";
+    } else if (values.preferred_date > maxThreeMonthsISO()) {
+      next['preferred_date'] = `Bookings are allowed only up to 3 months in advance (until ${maxThreeMonthsISO()}).`;
+    }
 
     if (!values.preferred_time) {
       next['preferred_time'] = "Please choose a time slot.";
     } else if (!timeSlots.includes(values.preferred_time)) {
       next['preferred_time'] = "Please choose a slot between 9:00 AM and 6:00 PM.";
+    } else if (isSlotPast(values.preferred_time, values.preferred_date)) {
+      next['preferred_time'] = "That time slot has already passed for today. Please pick a future slot or another date.";
     } else if ((slotOccupancy[values.preferred_time] || 0) >= SLOT_MAX_CAPACITY) {
       next['preferred_time'] = `The ${values.preferred_time} slot is currently filled (3/3 booked). Please select an available slot.`;
     }
+
 
     const people = Number(values.people_count || "1");
     if (!Number.isInteger(people) || people < 1 || people > 50)
@@ -292,13 +330,14 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
         />
       </Field>
 
-      <Field label="Preferred Date" required error={errors['preferred_date']}>
+      <Field label="Preferred Date (Max 3 months ahead)" required error={errors['preferred_date']}>
         <input
           className={fieldClass}
           value={values.preferred_date}
           onChange={(e) => set("preferred_date")(e.target.value)}
           type="date"
           min={todayISO()}
+          max={maxThreeMonthsISO()}
         />
       </Field>
 
@@ -319,13 +358,28 @@ export function AppointmentForm({ defaultService }: { defaultService?: string })
           {timeSlots.map((slot) => {
             const count = slotOccupancy[slot] || 0;
             const isFull = count >= SLOT_MAX_CAPACITY;
+            const isPast = isSlotPast(slot, values.preferred_date);
+            const isDisabled = isFull || isPast;
+
+            let label = slot;
+            if (isPast) {
+              label += " (CLOSED - Time Passed)";
+            } else if (isFull) {
+              label += " (FILLED - 3/3 Booked)";
+            } else if (count > 0) {
+              label += ` (${count}/${SLOT_MAX_CAPACITY} Booked)`;
+            } else {
+              label += " (Available)";
+            }
+
             return (
-              <option key={slot} value={slot} disabled={isFull}>
-                {slot} {isFull ? "(FILLED - 3/3 Booked)" : count > 0 ? `(${count}/${SLOT_MAX_CAPACITY} Booked)` : "(Available)"}
+              <option key={slot} value={slot} disabled={isDisabled}>
+                {label}
               </option>
             );
           })}
         </select>
+
         {values.preferred_date && availableRecommendedSlots.length > 0 && (
           <p className="mt-1.5 text-xs text-muted-foreground">
             Max 3 bookings allowed per hour slot.
