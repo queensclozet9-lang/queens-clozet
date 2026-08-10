@@ -47,7 +47,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       <div className="max-w-md text-center">
         <h1 className="font-serif text-3xl text-primary">This page didn't load</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try again or head back home.
+          {error?.message ? `Error: ${error.message}` : "Something went wrong on our end. You can try again or head back home."}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
